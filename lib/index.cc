@@ -8,12 +8,21 @@
 #define DECLARE_NAPI_GETTER_SETTER(name, getter, setter)				 \
 { (name), nullptr, nullptr, (getter), (setter), nullptr, napi_default, nullptr }
 
+class Test {
+public:
+	int val;
+};
+
 napi_value Init(napi_env env, napi_callback_info info)
 {
+	napi_value thiz;
+	napi_get_cb_info(env, info, nullptr, nullptr, &thiz, nullptr);
+	Test* t = new Test();
+	napi_wrap(env, thiz, reinterpret_cast<void*>(t), nullptr, nullptr, nullptr);
 	return nullptr;
 }
 
-napi_value Test(napi_env env, napi_callback_info info)
+napi_value F(napi_env env, napi_callback_info info)
 {
 	size_t argc = 1;
 	napi_value args[1];
@@ -27,18 +36,17 @@ napi_value Test(napi_env env, napi_callback_info info)
 	if (valuetype != napi_number) {
 		napi_throw_type_error(env, nullptr, "Wrong argument type on args, number expected.");
 	}
+	Test* t;
 	// crash here
-	int* number = (int *)0x7f7f7f7f;
-	napi_get_value_int32(env, args[0], number);
-	napi_value res;
-	napi_get_boolean(env, true, &res);
-	return res;
+	napi_unwrap(env, thiz, reinterpret_cast<void**>(&t));
+	t->val = 1;
+	return nullptr;
 }
 
 napi_value Init(napi_env env, napi_value exports) {
 	napi_value obj;
 	napi_property_descriptor desc[] = {
-		DECLARE_NAPI_PROPERTY("test", Test)
+		DECLARE_NAPI_PROPERTY("test", F)
 	};
 	napi_define_class(env, "KCP", NAPI_AUTO_LENGTH, Init, nullptr,
 		sizeof(desc) / sizeof(*desc), desc, &obj);
