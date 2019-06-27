@@ -1,0 +1,10 @@
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(node_version)
+
+  - script: yarn --frozen-lockfile --non-interactive
+    displayName: 'Install Dependency'
+
+  - script: node ./index.js
+    displayName: 'Run Code'
