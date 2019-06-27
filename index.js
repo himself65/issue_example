@@ -1,4 +1,15 @@
+const assert = require('assert')
 const { KCP } = require('./build/Release/napi_test')
 
 const kcp = new KCP()
-kcp.test()
+try {
+  kcp.test()
+} catch (e) {
+  assert.ok(e instanceof Error)
+}
+
+try {
+  kcp.test('')
+} catch (e) {
+  assert.ok(e instanceof TypeError)
+}

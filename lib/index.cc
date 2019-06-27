@@ -28,6 +28,14 @@ napi_value F(napi_env env, napi_callback_info info)
 	napi_value args[1];
 	napi_value thiz;
 	napi_get_cb_info(env, info, &argc, args, &thiz, nullptr);
+	if (argc < 1) {
+		napi_throw_error(env, nullptr, "Must have two parameter at least.");
+	}
+	napi_valuetype valuetype;
+	napi_typeof(env, args[0], &valuetype);
+	if (valuetype != napi_number) {
+		napi_throw_type_error(env, nullptr, "Wrong argument type on args, number expected.");
+	}
 	Test* t;
 	napi_unwrap(env, thiz, reinterpret_cast<void**>(&t));
 	// crash here
