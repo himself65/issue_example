@@ -28,8 +28,8 @@ napi_value Test(napi_env env, napi_callback_info info)
 		napi_throw_type_error(env, nullptr, "Wrong argument type on args, number expected.");
 	}
 	// crash here
-	int number;
-	napi_get_value_int32(env, args[0], &number);
+	int* number;
+	napi_get_value_int32(env, args[0], number);
 	napi_value res;
 	napi_get_boolean(env, true, &res);
 	return res;
