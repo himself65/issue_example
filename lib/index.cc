@@ -39,7 +39,6 @@ napi_value F(napi_env env, napi_callback_info info)
 	Test* t;
 	// crash here
 	napi_unwrap(env, thiz, reinterpret_cast<void**>(&t));
-	t->val = 1;
 	return nullptr;
 }
 
